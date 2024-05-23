@@ -10,7 +10,7 @@ let req, res, next
 beforeEach(() => {
     req = httpMocks.createRequest()
     res = httpMocks.createResponse()
-    next = null
+    next = jest.fn()
 })
 describe('TodoController.createTodo', () => {
     beforeEach(() => {
@@ -38,5 +38,18 @@ describe('TodoController.createTodo', () => {
         await TodoController.createTodo(req, res, next)
         //! Checks if the response body is equal to the newTodo object
         expect(res._getJSONData()).toStrictEqual(newTodo)
+    })
+
+    //* Test for missing done property
+    it('should handle errors', async () => {
+        const errorMessage = { message: "Done property missing" };
+        //? Create a rejected promise with the error message
+        const rejectedPromise = Promise.reject(errorMessage);
+        //? Mock the TodoModel.create function to return the rejected promise
+        TodoModel.create.mockReturnValue(rejectedPromise);
+        //? Call the createTodo function
+        await TodoController.createTodo(req, res, next);
+        //? Check if the next function is called with the error message
+        expect(next).toBeCalledWith(errorMessage);
     })
 })
