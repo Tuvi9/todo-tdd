@@ -20,22 +20,22 @@ describe('TodoController.createTodo', () => {
         expect(typeof TodoController.createTodo).toBe('function')
     })
 
-    it('should call TodoModel.create', () => { 
-        TodoController.createTodo(req, res, next)
+    it('should call TodoModel.create', async () => { 
+        await TodoController.createTodo(req, res, next)
         expect(TodoModel.create).toBeCalledWith(newTodo)
     })
 
-    it('should return 201 response code', () => {
-        TodoController.createTodo(req, res, next)
+    it('should return 201 response code', async () => {
+        await TodoController.createTodo(req, res, next)
         expect(res.statusCode).toBe(201)
         expect(res._isEndCalled()).toBeTruthy()
     })
 
-    it('should return json body in response', () => {
+    it('should return json body in response', async () => {
         //! Always returns the value of newTodo when TodoModel.create is called
-        TodoModel.create.mockReturnValue(newTodo)
+        await TodoModel.create.mockReturnValue(newTodo)
         //! Calls the createTodo function in the TodoController
-        TodoController.createTodo(req, res, next)
+        await TodoController.createTodo(req, res, next)
         //! Checks if the response body is equal to the newTodo object
         expect(res._getJSONData()).toStrictEqual(newTodo)
     })
